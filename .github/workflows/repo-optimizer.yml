@@ -16,7 +16,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
+      - name: List files for debugging
+        run: ls -R
       - name: Install dependencies
         run: pip install -r requirements.txt.txt
 
