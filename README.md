@@ -51,7 +51,7 @@ cd github-pareto-optimizer
 Install dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt.txt
 ```
 
 ### ⚙️ Configuration
