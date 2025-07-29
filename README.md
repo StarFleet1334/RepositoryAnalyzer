@@ -77,6 +77,8 @@ Execute the main script:
 
 ```bash
 python client.py
+
+you can also run - uvicorn app.main:app --reload to see UI
 ```
 
 ## 📊 Example Output
