@@ -1,0 +1,35 @@
+name: Repo Optimizer Pareto Analysis
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # This runs every sunday at midnight but user can modify as he wishes
+  workflow_dispatch: # And Also for that reason enabled to run manually
+
+jobs:
+  run-pareto-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Pareto Analysis Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+        run: |
+          python client.py
+
+      - name: Archive Pareto Report (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: pareto-report
+          path: reports/

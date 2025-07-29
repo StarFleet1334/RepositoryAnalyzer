@@ -1,3 +1,5 @@
+import os
+
 from config.config import Config
 from file_filter_strategy.dependencyFileFilter import FileFilterStrategy, DependencyFileFilter
 from formatter.outputFormatter import OutputFormatter
@@ -16,6 +18,17 @@ class GitHubRepoClientFacade:
         self.output_formatter = OutputFormatter()
         self.pareto_analyzer = ParetoAnalyzer()
 
+    def save_markdown_report(self, filename_pareto, contributor_pareto, path="reports"):
+        os.makedirs(path, exist_ok=True)
+        with open(f"{path}/pareto_summary.md", "w") as f:
+            f.write("# 📌 Pareto Analysis Report\n\n## Files\n\n")
+            for file, count, cum, pct in filename_pareto:
+                f.write(f"- **{file}**: {count} commits ({pct:.2f}%)\n")
+
+            f.write("\n## Contributors\n\n")
+            for contributor, count, cum, pct in contributor_pareto:
+                f.write(f"- **{contributor}**: {count} commits ({pct:.2f}%)\n")
+
     def run(self):
         filename_counts, author_counts, commits = self.commit_processor.get_all_relevant_filenames_and_author_counts()
 
@@ -27,6 +40,8 @@ class GitHubRepoClientFacade:
         # Pareto Analysis Summaries
         filename_pareto = self.pareto_analyzer.perform_pareto_analysis(filename_counts)
         contributor_pareto = self.pareto_analyzer.perform_pareto_analysis(author_counts)
+
+        self.save_markdown_report(filename_pareto, contributor_pareto)
 
         print("=" * 80)
         self.output_formatter.print_pareto_summary(
