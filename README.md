@@ -36,6 +36,10 @@ Understanding these critical files and key contributors helps prioritize resourc
 
    * Generates clearly formatted summaries indicating critical files and key contributors.
 
+5. **GitHub WorkFlow**
+   * Can run GitHub Action and can download artifacts containing .png's and description 
+   * Typically it is set to run on every sunday (midnight), but user can change it or manually run
+
 
 ## 🚦 Getting Started
 
