@@ -30,8 +30,8 @@ jobs:
       - name: Run Pareto Analysis Script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
+          OWNER: ${{ github.event.inputs.OWNER }}
+          REPO: ${{ github.event.inputs.REPO }}
         run: |
           python client.py
 
