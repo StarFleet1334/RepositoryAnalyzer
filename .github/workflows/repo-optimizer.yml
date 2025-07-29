@@ -4,7 +4,14 @@ on:
   schedule:
     - cron: '0 0 * * 0' # This runs every sunday at midnight but user can modify as he wishes
   workflow_dispatch: # And Also for that reason enabled to run manually
-
+    inputs:
+      OWNER:
+        description: "GitHub repository owner"
+        required: true
+        default: your-default-owner
+      REPO:
+        description: "GitHub repository name"
+        required: true
 jobs:
   run-pareto-analysis:
     runs-on: ubuntu-latest
@@ -12,20 +19,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: List files for debugging
+        run: ls -R
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      - name: List files for debugging
-        run: ls -R
+
       - name: Install dependencies
         run: pip install -r requirements.txt.txt
 
       - name: Run Pareto Analysis Script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: ${{ secrets.OWNER }}
-          REPO: ${{ secrets.REPO }}
+          OWNER: ${{ github.event.inputs.OWNER }}
+          REPO: ${{ github.event.inputs.REPO }}
         run: |
           python client.py
 
