@@ -1,0 +1,45 @@
+name: FastAPI Preview (Uvicorn)
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+
+  workflow_dispatch:
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start Uvicorn
+        run: |
+          nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 --lifespan on &
+          echo "Uvicorn started → http://localhost:8000"
+
+      - name: Expose via ngrok
+        if: ${{ secrets.NGROK_AUTH_TOKEN != '' }}
+        uses: ngrok/ngrok-action@v1
+        with:
+          token: ${{ secrets.NGROK_AUTH_TOKEN }}
+          port: 8000
+        id: ngrok
+
+      - name: Preview URL
+        if: steps.ngrok.outputs.url != ''
+        run: "echo '🌐 Public preview: ${{ steps.ngrok.outputs.url }}'"
+
+      - name: Keep alive
+        run: sleep 1200

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GitHub Repo Optimizer – Pareto</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="/static/favicon.ico" />
+</head>
+<body>
+  {# ---------- floating background blobs ---------- #}
+  {% for n in range(1,9) %}
+  <div class="jelly j{{n}}"></div>
+  {% endfor %}
+
+  {# ---------- liquid spinner overlay (hidden by default) ---------- #}
+  <div id="spinnerOverlay" class="spinnerOverlay" style="display:none">
+    <div class="liquid">
+      <div class="blob"></div><div class="blob"></div><div class="blob"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>🚀 GitHub Repo Optimizer – Pareto Analysis</h1>
+
+    {# ----------------- ANALYZE FORM ----------------- #}
+    <form id="analyzeForm" method="post" action="/analyze">
+      <input name="owner" placeholder="GitHub Owner" required />
+      <input name="repo"  placeholder="Repository Name" required />
+      <input name="token" placeholder="GitHub Token" type="password" required />
+      <button type="submit">Analyze</button>
+    </form>
+
+    {# ----------------- RESULTS (hidden until POST returns) ----------------- #}
+    {% if files %}
+    <div id="results" style="display:none">
+
+      <button id="backBtn" class="btnBack">↩ Back</button>
+
+      <div class="viewToggle">
+        <button id="btnReport" class="active">📄 Report</button>
+        <button id="btnImages">🖼 Images</button>
+      </div>
+
+      {# ---------- REPORT VIEW ---------- #}
+      <section id="reportView">
+        <h2>📁 File Analysis (80 %)</h2>
+        <ul id="fileList"></ul>
+        <div class="pager">
+          <button id="filePrev">⟨ Prev</button><span id="filePage"></span><button id="fileNext">Next ⟩</button>
+        </div>
+
+        <h2>👥 Contributor Analysis (80 %)</h2>
+        <ul id="contribList"></ul>
+        <div class="pager">
+          <button id="contribPrev">⟨ Prev</button><span id="contribPage"></span><button id="contribNext">Next ⟩</button>
+        </div>
+      </section>
+
+      {# ---------- IMAGE VIEW ---------- #}
+      <section id="imageView" style="display:none">
+        <h2>📊 Visual Charts</h2>
+        <div class="imgBox">
+          <img id="chartImg" src="/static/{{ charts[0] }}" alt="chart" />
+        </div>
+        <div class="pager">
+          <button id="imgPrev">⟨ Prev</button><span id="imgPage"></span><button id="imgNext">Next ⟩</button>
+        </div>
+      </section>
+    </div>
+    {% endif %}
+  </div>
+
+  {# ---------- GLOBAL JS (always present) ---------- #}
+  <script>
+    const spinner     = document.getElementById("spinnerOverlay");
+    const analyzeForm = document.getElementById("analyzeForm");
+
+    /* Spinner on submit */
+    analyzeForm.addEventListener("submit", () => {
+        spinner.style.display = "flex";
+    });
+
+    /* Droplet generator */
+    function spawnDroplet(){
+        const d = document.createElement("div");
+        d.className = "droplet";
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = 80 + Math.random() * 40;
+        d.style.setProperty("--dx",  Math.cos(angle)*dist + "px");
+        d.style.setProperty("--dy",  Math.sin(angle)*dist + "px");
+        document.querySelector(".liquid").appendChild(d);
+        d.addEventListener("animationend", () => d.remove());
+    }
+
+    setInterval(() => {
+        if (spinner.style.display === "flex") {
+            spawnDroplet();
+            if (Math.random() > .5) spawnDroplet();
+        }
+    }, 200);
+  </script>
+
+  {# ---------- RESULTS JS (only rendered after POST) ---------- #}
+  {% if files %}
+  <script>
+    /* Data from backend */
+    const files        = {{ files|tojson|safe }};
+    const contributors = {{ contributors|tojson|safe }};
+    const charts       = {{ charts|tojson|safe }};
+    const PAGE_SIZE    = 15;
+
+    const $ = id => document.getElementById(id);
+    const paginate = (data, p) => data.slice(p*PAGE_SIZE, (p+1)*PAGE_SIZE);
+
+    /* -------- Report pagination -------- */
+    function initList(listId, prevId, nextId, pageId, data){
+      let page = 0;
+      const list=$(listId),prev=$(prevId),next=$(nextId),lbl=$(pageId);
+      function render(){
+         list.innerHTML="";
+         paginate(data,page).forEach(([p,c,_,pct])=>{
+           list.insertAdjacentHTML("beforeend",
+            `<li class="row"><span class="path">${p}</span><span class="stats">${c} commits (${pct.toFixed(2)}%)</span></li>`);
+         });
+         const pages = Math.ceil(data.length/PAGE_SIZE);
+         lbl.textContent=`Page ${page+1}/${pages}`;
+         prev.disabled = page===0;
+         next.disabled = page+1>=pages;
+      }
+      prev.onclick=()=>{if(page){page--;render();}};
+      next.onclick=()=>{if((page+1)*PAGE_SIZE<data.length){page++;render();}};
+      render();
+    }
+    initList("fileList","filePrev","fileNext","filePage",files);
+    initList("contribList","contribPrev","contribNext","contribPage",contributors);
+
+    /* -------- Image pagination -------- */
+    (function(){
+      let idx=0;
+      const img=$("chartImg"),prev=$("imgPrev"),next=$("imgNext"),lbl=$("imgPage");
+      function render(){
+        img.src=`/static/${charts[idx]}`;
+        lbl.textContent=`${idx+1}/${charts.length}`;
+        prev.disabled = idx===0;
+        next.disabled = idx+1===charts.length;
+      }
+      prev.onclick = () => { if(idx){idx--;render();} };
+      next.onclick = () => { if(idx+1<charts.length){idx++;render();} };
+      render();
+    })();
+
+    $("btnReport").onclick = () => toggle(true);
+    $("btnImages").onclick = () => toggle(false);
+    function toggle(r){
+      $("btnReport").classList.toggle("active",r);
+      $("btnImages").classList.toggle("active",!r);
+      $("reportView").style.display = r?"block":"none";
+      $("imageView").style.display  = r?"none":"block";
+    }
+
+    $("backBtn").onclick = () => {
+       $("results").style.display="none";
+       analyzeForm.style.display="block";
+       window.scrollTo({top:0,behavior:'smooth'});
+    };
+
+    analyzeForm.style.display = "none";
+    $("results").style.display = "block";
+    spinner.style.display      = "none";
+  </script>
+  {% endif %}
+</body>
+</html>

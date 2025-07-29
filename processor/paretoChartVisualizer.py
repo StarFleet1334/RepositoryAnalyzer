@@ -55,7 +55,7 @@ class ParetoChartVisualizer:
         fig.show()
 
     @staticmethod
-    def save_pareto_chart_image(data, title, xlabel, ylabel, path="reports", filename="pareto_chart.png"):
+    def save_pareto_chart_image(data, title, xlabel, ylabel, filename="pareto_chart.png"):
         sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
         labels, counts = zip(*sorted_items)
 
@@ -90,7 +90,8 @@ class ParetoChartVisualizer:
             width=1000
         )
 
-        os.makedirs(path, exist_ok=True)
-        full_path = os.path.join(path, filename)
-        fig.write_image(full_path)
-        print(f"Saved Pareto chart: {full_path}")
+        for path in ["app/static", "reports"]:
+            os.makedirs(path, exist_ok=True)
+            full_path = os.path.join(path, filename)
+            fig.write_image(full_path)
+            print(f"Saved Pareto chart to: {full_path}")

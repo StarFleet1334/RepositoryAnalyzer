@@ -3,3 +3,7 @@ python-dotenv
 plotly
 kaleido
 numpy
+fastapi
+uvicorn
+python-multipart
+jinja2
