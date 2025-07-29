@@ -29,5 +29,18 @@ jobs:
           nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 --lifespan on &
           echo "Uvicorn started → http://localhost:8000"
 
+      - name: Expose via ngrok
+        if: ${{ env.NGROK_AUTH_TOKEN != '' }}
+        id: ngrok
+        uses: ngrok/ngrok-action@v1
+        with:
+          token: ${{ env.NGROK_AUTH_TOKEN }}
+          port: 8000
+
+      - name: Show public URL
+        if: ${{ steps.ngrok.outputs.url != '' }}
+        run: |
+          echo "Preview: ${{ steps.ngrok.outputs.url }}"
+
       - name: Keep alive
         run: sleep 1200
