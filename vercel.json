@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "Dockerfile", "use": "vercel/oci@0.8.0" }
-  ],
   "routes": [
     { "src": "/(.*)", "dest": "/" }
   ]
