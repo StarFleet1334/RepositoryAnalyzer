@@ -1,3 +1,5 @@
+import os
+
 from processor.ParetoAnalyzer import ParetoAnalyzer
 
 import plotly.graph_objects as go
@@ -51,3 +53,44 @@ class ParetoChartVisualizer:
         )
 
         fig.show()
+
+    @staticmethod
+    def save_pareto_chart_image(data, title, xlabel, ylabel, path="reports", filename="pareto_chart.png"):
+        sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        labels, counts = zip(*sorted_items)
+
+        cumulative = []
+        total = sum(counts)
+        cum_sum = 0
+        for c in counts:
+            cum_sum += c
+            cumulative.append(cum_sum / total * 100)
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(x=labels, y=counts, name="Commits", marker=dict(color="steelblue")))
+
+        fig.add_trace(go.Scatter(x=labels, y=cumulative, name="Cumulative %", yaxis="y2", mode="lines+markers",
+                                 line=dict(color="orange")))
+
+        fig.update_layout(
+            title=title,
+            xaxis=dict(title=xlabel),
+            yaxis=dict(title=ylabel),
+            yaxis2=dict(
+                title="Cumulative %",
+                overlaying="y",
+                side="right",
+                range=[0, 100],
+                showgrid=False
+            ),
+            legend=dict(x=0.01, y=0.99),
+            margin=dict(l=60, r=60, t=80, b=150),
+            height=600,
+            width=1000
+        )
+
+        os.makedirs(path, exist_ok=True)
+        full_path = os.path.join(path, filename)
+        fig.write_image(full_path)
+        print(f"Saved Pareto chart: {full_path}")

@@ -20,7 +20,7 @@ class GitHubRepoClientFacade:
 
     def save_markdown_report(self, filename_pareto, contributor_pareto, path="reports"):
         os.makedirs(path, exist_ok=True)
-        with open(f"{path}/pareto_summary.md", "w") as f:
+        with open(f"{path}/pareto_summary.md", "w", encoding="utf-8") as f:
             f.write("# 📌 Pareto Analysis Report\n\n## Files\n\n")
             for file, count, cum, pct in filename_pareto:
                 f.write(f"- **{file}**: {count} commits ({pct:.2f}%)\n")
@@ -56,18 +56,20 @@ class GitHubRepoClientFacade:
         )
 
         # Visualization (Interactive Pareto Chart)
-        ParetoChartVisualizer.show_interactive_pareto_chart(
+        ParetoChartVisualizer.save_pareto_chart_image(
             data=filename_counts,
             title="📊 Pareto Chart - File Changes",
             xlabel="Files",
-            ylabel="Number of Commits"
+            ylabel="Number of Commits",
+            filename="file_changes_pareto.png"
         )
 
-        ParetoChartVisualizer.show_interactive_pareto_chart(
+        ParetoChartVisualizer.save_pareto_chart_image(
             data=author_counts,
             title="👥 Pareto Chart - Contributor Activity",
             xlabel="Contributors",
-            ylabel="Number of Commits"
+            ylabel="Number of Commits",
+            filename="contributor_activity_pareto.png"
         )
 
 def main():
