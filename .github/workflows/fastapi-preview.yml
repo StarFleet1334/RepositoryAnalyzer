@@ -38,8 +38,9 @@ jobs:
         id: ngrok
 
       - name: Preview URL
-        if: steps.ngrok.outputs.url != ''
+        if: ${{ steps.ngrok.outputs.url != '' }}
         run: "echo '🌐 Public preview: ${{ steps.ngrok.outputs.url }}'"
+
 
       - name: Keep alive
         run: sleep 1200
