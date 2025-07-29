@@ -2,6 +2,7 @@ from config.config import Config
 from file_filter_strategy.dependencyFileFilter import FileFilterStrategy, DependencyFileFilter
 from formatter.outputFormatter import OutputFormatter
 from github_api.github_api import GitHubAPIClient
+from processor.ParetoAnalyzer import ParetoAnalyzer
 from processor.commitProcessor import CommitProcessor
 
 
@@ -12,12 +13,28 @@ class GitHubRepoClientFacade:
         self.file_filter = file_filter or DependencyFileFilter()
         self.commit_processor = CommitProcessor(self.api_client, self.file_filter)
         self.output_formatter = OutputFormatter()
+        self.pareto_analyzer = ParetoAnalyzer()
 
     def run(self):
         filename_counts, author_counts, commits = self.commit_processor.get_all_relevant_filenames_and_author_counts()
+
+        # Original summaries
         self.output_formatter.print_filenames_summary(filename_counts)
-        print("======================================================")
+        print("=" * 80)
         self.output_formatter.print_contributors_summary(author_counts)
+
+        # Pareto Analysis Summaries
+        filename_pareto = self.pareto_analyzer.perform_pareto_analysis(filename_counts)
+        contributor_pareto = self.pareto_analyzer.perform_pareto_analysis(author_counts)
+
+        print("=" * 80)
+        self.output_formatter.print_pareto_summary(filename_pareto, label="Filename",
+                                                   title="📌 Pareto Analysis for Files (80%)")
+
+        print("=" * 80)
+        self.output_formatter.print_pareto_summary(contributor_pareto, label="Contributor",
+                                                   title="📌 Pareto Analysis for Contributors (80%)")
+
 
 def main():
     config = Config()

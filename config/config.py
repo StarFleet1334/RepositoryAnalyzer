@@ -1,6 +1,4 @@
-import requests
 import os
-from collections import defaultdict
 from dotenv import load_dotenv
 
 load_dotenv()
