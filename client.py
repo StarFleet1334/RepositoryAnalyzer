@@ -4,6 +4,7 @@ from formatter.outputFormatter import OutputFormatter
 from github_api.github_api import GitHubAPIClient
 from processor.ParetoAnalyzer import ParetoAnalyzer
 from processor.commitProcessor import CommitProcessor
+from processor.paretoChartVisualizer import ParetoChartVisualizer
 
 
 class GitHubRepoClientFacade:
@@ -28,13 +29,31 @@ class GitHubRepoClientFacade:
         contributor_pareto = self.pareto_analyzer.perform_pareto_analysis(author_counts)
 
         print("=" * 80)
-        self.output_formatter.print_pareto_summary(filename_pareto, label="Filename",
-                                                   title="📌 Pareto Analysis for Files (80%)")
+        self.output_formatter.print_pareto_summary(
+            filename_pareto, label="Filename",
+            title="📌 Pareto Analysis for Files (80%)"
+        )
 
         print("=" * 80)
-        self.output_formatter.print_pareto_summary(contributor_pareto, label="Contributor",
-                                                   title="📌 Pareto Analysis for Contributors (80%)")
+        self.output_formatter.print_pareto_summary(
+            contributor_pareto, label="Contributor",
+            title="📌 Pareto Analysis for Contributors (80%)"
+        )
 
+        # Visualization (Interactive Pareto Chart)
+        ParetoChartVisualizer.show_interactive_pareto_chart(
+            data=filename_counts,
+            title="📊 Pareto Chart - File Changes",
+            xlabel="Files",
+            ylabel="Number of Commits"
+        )
+
+        ParetoChartVisualizer.show_interactive_pareto_chart(
+            data=author_counts,
+            title="👥 Pareto Chart - Contributor Activity",
+            xlabel="Contributors",
+            ylabel="Number of Commits"
+        )
 
 def main():
     config = Config()

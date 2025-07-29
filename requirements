@@ -1,2 +1,4 @@
 python -m pip install requests
 python -m pip install python-dotenv
+pip install plotly
+pip install kaleido --upgrade

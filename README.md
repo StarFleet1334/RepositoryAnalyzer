@@ -14,6 +14,7 @@ Understanding these critical files and key contributors helps prioritize resourc
 * Analyze commit data to determine which files are most frequently changed.
 * Identify which contributors make the majority of commits.
 * Clearly highlight the most impactful files and contributors using Pareto Analysis.
+* Provide two graphs: Pareto Chart - Contributor Activity & File Changes
 
 ## 🛠 How It Works
 
@@ -62,7 +63,9 @@ Create or update the configuration file (`config.py`):
 GITHUB_OWNER = 'your-github-username'
 GITHUB_REPO = 'repository-name'
 GITHUB_TOKEN = 'your-personal-access-token'
+
 ```
+*  Additionally in "paretoChartVisaulizer.py" on line 7 you can set top_n as you prefer to visualize more in graph 
 
 ### 🚀 Running the Optimizer
 
