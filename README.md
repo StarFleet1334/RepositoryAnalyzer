@@ -45,19 +45,6 @@ Understanding these critical files and key contributors helps prioritize resourc
 
 ### 📥 Installation
 
-Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/github-pareto-optimizer.git
-cd github-pareto-optimizer
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt.txt
-```
-
 ### ⚙️ Configuration
 
 Create or update the configuration file (`config.py`):
@@ -71,15 +58,61 @@ GITHUB_TOKEN = 'your-personal-access-token'
 ```
 *  Additionally in "paretoChartVisaulizer.py" on line 7 you can set top_n as you prefer to visualize more in graph 
 
-### 🚀 Running the Optimizer
+## 🚀 Quick Start
 
-Execute the main script:
+### 1 · Clone the repository
+
+```bash
+git clone https://github.com/yourusername/RepositoryAnalyzer.git
+cd RepositoryAnalyzer.git
+```
+
+### 2 · Install dependencies
+
+```bash
+# (Optional) create an isolated environment
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+
+# Install Python packages
+pip install -r requirements.txt
+```
+
+### 3 · Run the back‑end client (You can run with this—Here you get an interactive plotted graph)
 
 ```bash
 python client.py
-
-you can also run - uvicorn app.main:app --reload to see UI
 ```
+
+[![Watch the demo](assets/terminal-video-thumb.jpg)](assets/terminal-video.mp4)
+
+
+The CLI collects Git statistics, performs a Pareto analysis, and stores the results
+
+### 4 · Launch the web UI (Or you can run with this—Here you get .png's of a plotted graph)
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) for an interactive Swagger UI or visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to browse the dashboard.
+
+[![Watch the demo](assets/ui-video-thumb.jpg)](assets/ui-video.mp4)
+
+
+---
+
+## 🛠️ GitHub Actions Workflow
+
+Automate the analysis directly in the cloud:
+
+1. Navigate to **GitHub → Actions → Repo Optimizer Pareto Analysis**.
+2. Click **Run workflow**.
+3. Provide the required inputs (e.g., *repository name*, *GitHub token*, *your github username*).
+4. Trigger the run – a detailed report appears in the run artefacts once the job finishes.
+
+---
+  
 
 ## 📊 Example Output
 
@@ -105,6 +138,15 @@ janesmith          |     3 |                   26 |                             
 
 ```
 .
+├── app
+│    ├── static
+│    │    └── favicon.ico
+│    │    └── style.css
+│    ├── templates
+│    │    └── index.html
+│    ├── main.py
+│    ├── routes.py
+│    └── services.py     
 ├── config
 │   └── config.py
 ├── file_filter_strategy

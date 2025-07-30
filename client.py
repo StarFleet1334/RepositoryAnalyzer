@@ -54,8 +54,7 @@ class GitHubRepoClientFacade:
             contributor_pareto, label="Contributor",
             title="📌 Pareto Analysis for Contributors (80%)"
         )
-
-        # Visualization (Interactive Pareto Chart)
+        # Visualization (For Generating Pareto Chart)
         ParetoChartVisualizer.save_pareto_chart_image(
             data=filename_counts,
             title="📊 Pareto Chart - File Changes",
@@ -70,6 +69,20 @@ class GitHubRepoClientFacade:
             xlabel="Contributors",
             ylabel="Number of Commits",
             filename="contributor_activity_pareto.png"
+        )
+
+        ParetoChartVisualizer.show_interactive_pareto_chart(
+            data=filename_counts,
+            title="📊 Pareto Chart - File Changes",
+            xlabel="Files",
+            ylabel="Number of Commits"
+        )
+
+        ParetoChartVisualizer.show_interactive_pareto_chart(
+            data=author_counts,
+            title="👥 Pareto Chart - Contributor Activity",
+            xlabel="Contributors",
+            ylabel="Number of Commits"
         )
 
 def main():
