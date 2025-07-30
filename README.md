@@ -84,7 +84,7 @@ pip install -r requirements.txt
 python client.py
 ```
 
-[![Watch the demo](assets/terminal-video-thumb.jpg)](assets/terminal-video.mp4)
+[![Watch the demo](assets/terminal-video-thumb.jpg)](https://github.com/StarFleet1334/RepositoryAnalyzer/releases/download/v1.0.0/terminal-video.mp4)
 
 
 The CLI collects Git statistics, performs a Pareto analysis, and stores the results
@@ -97,7 +97,7 @@ uvicorn app.main:app --reload
 
 Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) for an interactive Swagger UI or visit [http://127.0.0.1:8000](http://127.0.0.1:8000) to browse the dashboard.
 
-[![Watch the demo](assets/ui-video-thumb.jpg)](assets/ui-video.mp4)
+[![Watch the demo](assets/ui-video-thumb.jpg)](https://github.com/StarFleet1334/RepositoryAnalyzer/releases/download/v1.0.0/ui-video.mp4)
 
 
 ---
@@ -162,6 +162,12 @@ janesmith          |     3 |                   26 |                             
 ├── .env
 └── requirements.txt
 ```
+
+## Tools, Libraries & Languages used:
+* Python,HTML,CSS,JavaScript
+* .yml file formatting,Github Actions,
+* Libraries: requests,python-dotenv,plotly,kaleido,numpy,fastapi,uvicorn,python-multipart and jinja2
+* Github API
 
 ## 📄 License
 
